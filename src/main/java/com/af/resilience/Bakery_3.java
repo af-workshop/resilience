@@ -38,10 +38,10 @@ class Bakery_3 {
      * ingredients in a reasonable time (typically 100 milliseconds).
      */
     private Bakery_3() {
-        timeLimiter = null; // Implement me
+        timeLimiter = TimeLimiter.of(Duration.ofMillis(100));
     }
 
     Cake bakeCake(Ingredients ingredients) throws Exception { ;
-        return null; // Implement me
+        return timeLimiter.executeFutureSupplier(() -> executor.submit(() -> ovenStation.bake(mixStation.mix(ingredients))));
     }
 }

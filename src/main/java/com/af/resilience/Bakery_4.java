@@ -38,10 +38,16 @@ class Bakery_4 {
      * Mission: Construct a Retry that will try to bake the CakeMix again, after 100ms, if it did not work the first time.
      */
     private Bakery_4() {
-        retry = null; // Implement me
+        retry = Retry.of("Retry",
+                RetryConfig
+                        .custom()
+                        .waitDuration(Duration.ofMillis(100))
+                        .build()
+        );
     }
 
     Cake bakeCake(Ingredients ingredients) throws Exception {
-        return null; // Implement me
+        CakeMix cakeMix = mixStation.mix(ingredients);
+        return retry.executeCallable(() -> ovenStation.bake(cakeMix));
     }
 }

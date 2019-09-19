@@ -48,11 +48,22 @@ class Bakery_5 {
      * 40 attempts, but REMEMBER that there could be more than one explanation for the failure in this mission!
      */
     private Bakery_5() {
-        timeLimiter = null; // Implement me
-        circuitBreaker = null; // Implement me
+        timeLimiter = TimeLimiter.of(Duration.ofMillis(100));
+        circuitBreaker = CircuitBreaker.of("Breaker",
+                CircuitBreakerConfig
+                        .custom()
+                        .ringBufferSizeInClosedState(40)
+                        .failureRateThreshold(50)
+                        .build())
+        ;
     }
 
     Cake bakeCake(Ingredients ingredients) throws Exception {
-        return null; // Implement me
+        Supplier<Future<Cake>> futureSupplier = () -> executor.submit(() -> ovenStation.bake(mixStation.mix(ingredients)));
+
+        Callable<Cake> timeLimiterCallable = TimeLimiter.decorateFutureSupplier(timeLimiter, futureSupplier);
+        Callable<Cake> circuitBreakerCallable = CircuitBreaker.decorateCallable(circuitBreaker, timeLimiterCallable);
+
+        return circuitBreakerCallable.call();
     }
 }

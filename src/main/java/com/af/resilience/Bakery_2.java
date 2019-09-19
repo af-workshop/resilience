@@ -32,10 +32,16 @@ class Bakery_2 {
      * out of the last 40 attempts. If the baker is soo bad, it's time to go home for the day.
      */
     private Bakery_2() {
-        circuitBreaker = null; // Implement me
+        circuitBreaker = CircuitBreaker.of("Breaker",
+                CircuitBreakerConfig
+                        .custom()
+                        .failureRateThreshold(50f)
+                        .ringBufferSizeInClosedState(40)
+                        .build())
+        ;
     }
 
     Cake bakeCake(Ingredients ingredients) throws Exception {
-        return null; // Implement me
+        return circuitBreaker.executeCallable(() -> ovenStation.bake(mixStation.mix(ingredients)));
     }
 }

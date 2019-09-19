@@ -23,6 +23,6 @@ class Bakery_1 {
      * Mission: Mix the Ingredients into a CakeMix, and make it a Cake in the oven!
      */
     Cake bakeCake(Ingredients ingredients) {
-         return null; // Implement me
+        return ovenStation.bake(mixStation.mix(ingredients));
     }
 }
